@@ -19,6 +19,7 @@ import BrandLogo from './BrandLogo';
 import userService, { UserData } from '../services/userService';
 
 const landingLinks = [
+  { href: '#rotas-unifio', label: 'Rotas' },
   { href: '#como-funciona', label: 'Como funciona' },
   { href: '#valor-unifio', label: 'Valor UniFio' },
 ];

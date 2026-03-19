@@ -5,8 +5,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FaArrowRight,
+  FaBus,
   FaComments,
+  FaHome,
   FaMapMarkedAlt,
+  FaMapMarkerAlt,
   FaRoute,
   FaShieldAlt,
   FaSync,
@@ -47,6 +50,39 @@ const steps = [
     title: 'Combine tudo no chat',
     description:
       'Horário, valor e ponto de encontro ficam alinhados sem sair do app.',
+  },
+] as const;
+
+const cityRoutes = [
+  {
+    icon: FaBus,
+    eyebrow: 'Intermunicipal',
+    origin: 'Terminal Rodoviario de Ourinhos',
+    address: 'Rua Santa Catarina, 415 - Vila Perino',
+    description:
+      'Entrada natural para alunos que chegam de outras cidades e precisam completar o trecho ate a UniFio.',
+    badge: 'Chegada frequente',
+    badgeClass: 'bg-sky-50 text-sky-700',
+  },
+  {
+    icon: FaHome,
+    eyebrow: 'Residencial',
+    origin: 'Nova Ourinhos',
+    address: 'Av. Luiz Saldanha Rodrigues - Nova Ourinhos',
+    description:
+      'Eixo residencial que combina bem com caronas recorrentes para quem sai no mesmo horario de aula.',
+    badge: 'Rota recorrente',
+    badgeClass: 'bg-emerald-50 text-emerald-700',
+  },
+  {
+    icon: FaMapMarkerAlt,
+    eyebrow: 'Ponto urbano',
+    origin: 'Vila Odilon',
+    address: 'Rua Republica - Vila Odilon',
+    description:
+      'Origem util para combinar embarques curtos dentro da cidade antes do trajeto ate o campus.',
+    badge: 'Encontro rapido',
+    badgeClass: 'bg-amber-50 text-amber-700',
   },
 ] as const;
 
@@ -279,6 +315,203 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section id="rotas-unifio" className="scroll-mt-24 px-4 py-14 md:py-18">
+        <div className="container mx-auto max-w-6xl">
+          <div className="max-w-2xl">
+            <span className="section-kicker">Rotas ate a UniFio</span>
+            <h2 className="font-display text-4xl text-slate-950 md:text-5xl">
+              Um mapa que conecta pontos reais da cidade ao campus.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
+              Inspirado na logica de mapa de produto, o UniGo pode mostrar rotas
+              urbanas e intermunicipais chegando a um destino central: a UniFio.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] lg:items-start">
+            <div className="brand-panel overflow-hidden p-4 sm:p-5">
+              <div className="relative overflow-hidden rounded-[26px] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.92))] px-4 pb-4 pt-5">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(96,165,250,0.14),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(15,31,77,0.08),transparent_28%)]" />
+                <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] [background-size:26px_26px]" />
+
+                <div className="relative z-10 flex flex-wrap gap-2">
+                  <div className="rounded-full bg-slate-950 px-3 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-white">
+                    Destino central
+                  </div>
+                  <div className="rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-slate-600">
+                    3 origens de exemplo
+                  </div>
+                </div>
+
+                <div className="relative z-10 mt-5 h-[22rem] sm:h-[24rem]">
+                  <svg
+                    viewBox="0 0 340 360"
+                    className="absolute inset-0 h-full w-full"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M44 88C108 92 142 122 180 148C217 173 248 180 286 176"
+                      fill="none"
+                      stroke="rgba(59,130,246,0.68)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray="8 10"
+                    />
+                    <path
+                      d="M54 286C108 268 152 232 198 180C228 146 250 120 286 176"
+                      fill="none"
+                      stroke="rgba(16,185,129,0.62)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray="8 10"
+                    />
+                    <path
+                      d="M232 296C228 258 238 232 256 214C271 198 278 188 286 176"
+                      fill="none"
+                      stroke="rgba(245,158,11,0.72)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray="8 10"
+                    />
+                  </svg>
+
+                  <div className="absolute left-[9%] top-[16%] w-[8.4rem] rounded-2xl border border-white/80 bg-white/92 p-3 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.35)]">
+                    <div className="flex items-center gap-2">
+                      <div className="feature-icon h-9 w-9 rounded-2xl">
+                        <FaBus className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[0.78rem] font-semibold leading-5 text-slate-900">
+                          Terminal
+                        </div>
+                        <div className="text-[0.68rem] leading-4 text-slate-500">
+                          Santa Catarina, 415
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute left-[8%] top-[69%] w-[8.8rem] rounded-2xl border border-white/80 bg-white/92 p-3 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.35)]">
+                    <div className="flex items-center gap-2">
+                      <div className="feature-icon h-9 w-9 rounded-2xl">
+                        <FaHome className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[0.78rem] font-semibold leading-5 text-slate-900">
+                          Nova Ourinhos
+                        </div>
+                        <div className="text-[0.68rem] leading-4 text-slate-500">
+                          Luiz Saldanha Rodrigues
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute left-[58%] top-[72%] w-[7.6rem] rounded-2xl border border-white/80 bg-white/92 p-3 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.35)]">
+                    <div className="flex items-center gap-2">
+                      <div className="feature-icon h-9 w-9 rounded-2xl">
+                        <FaMapMarkerAlt className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[0.78rem] font-semibold leading-5 text-slate-900">
+                          Vila Odilon
+                        </div>
+                        <div className="text-[0.68rem] leading-4 text-slate-500">
+                          Rua Republica
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute left-[66%] top-[22%] w-[8.7rem] rounded-[1.35rem] border border-blue-200 bg-slate-950/96 p-3 text-white shadow-[0_28px_52px_-28px_rgba(15,31,77,0.8)]">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/12 text-white">
+                        <FaUniversity className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[0.82rem] font-semibold leading-5">
+                          Campus UniFio
+                        </div>
+                        <div className="text-[0.68rem] leading-4 text-blue-100/78">
+                          BR-153, km 338+420m
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 rounded-full bg-white/10 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-blue-100/86">
+                      Agua do Cateto
+                    </div>
+                  </div>
+
+                  <div className="absolute left-[18%] top-[28%] h-3.5 w-3.5 rounded-full border-[3px] border-white bg-sky-500 shadow-[0_0_0_8px_rgba(14,165,233,0.14)]" />
+                  <div className="absolute left-[18%] top-[78%] h-3.5 w-3.5 rounded-full border-[3px] border-white bg-emerald-500 shadow-[0_0_0_8px_rgba(16,185,129,0.14)]" />
+                  <div className="absolute left-[72%] top-[78%] h-3.5 w-3.5 rounded-full border-[3px] border-white bg-amber-500 shadow-[0_0_0_8px_rgba(245,158,11,0.14)]" />
+                  <div className="absolute left-[78%] top-[42%] h-4 w-4 rounded-full border-[4px] border-white bg-blue-600 shadow-[0_0_0_10px_rgba(37,99,235,0.16)]" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              {cityRoutes.map((route) => (
+                <article key={route.origin} className="feature-card p-5">
+                  <div className="relative z-10 flex items-start gap-4">
+                    <div className="feature-icon h-11 w-11 shrink-0 rounded-2xl">
+                      <route.icon className="h-4 w-4" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-blue-700">
+                            {route.eyebrow}
+                          </div>
+                          <h3 className="mt-2 text-lg font-semibold leading-7 text-slate-900">
+                            {route.origin}
+                          </h3>
+                        </div>
+
+                        <div
+                          className={`rounded-full px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] ${route.badgeClass}`}
+                        >
+                          {route.badge}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 text-sm font-medium leading-6 text-slate-700">
+                        {route.address}
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        {route.description}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+
+              <div className="soft-panel px-5 py-4">
+                <div className="flex items-start gap-3">
+                  <div className="feature-icon h-10 w-10 shrink-0 rounded-2xl">
+                    <FaMapMarkedAlt className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
+                      Endereco de destino
+                    </div>
+                    <div className="mt-2 text-base font-semibold text-slate-900">
+                      Rodovia BR-153, km 338+420m - Agua do Cateto
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-slate-500">
+                      Assim a landing deixa claro que o UniGo pode organizar caronas
+                      usando referencias reais da rotina de Ourinhos e da chegada ao
+                      campus.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
