@@ -1,0 +1,191 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "UniGo" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e5]:
+          - img [ref=e10]
+          - generic [ref=e16]: UniGo
+      - generic [ref=e17]:
+        - link "Rotas" [ref=e18] [cursor=pointer]:
+          - /url: "#rotas-unifio"
+        - link "Como funciona" [ref=e19] [cursor=pointer]:
+          - /url: "#como-funciona"
+        - link "Valor UniFio" [ref=e20] [cursor=pointer]:
+          - /url: "#valor-unifio"
+      - generic [ref=e21]:
+        - link "Entrar" [ref=e22] [cursor=pointer]:
+          - /url: /login
+        - link "Criar conta" [ref=e23] [cursor=pointer]:
+          - /url: /register
+  - main [ref=e24]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Feito para a rotina da comunidade UniFio
+        - generic [ref=e34]:
+          - img [ref=e39]
+          - generic [ref=e44]:
+            - generic [ref=e45]: UniGo
+            - generic [ref=e46]: Mobilidade universitaria para a UniFio
+        - heading "Caronas universitarias para a UniFio, com mais economia e menos estresse." [level=1] [ref=e47]
+        - paragraph [ref=e48]: O UniGo conecta alunos que fazem trajetos parecidos em Ourinhos para dividir custos, organizar a ida ao campus e tornar a rotina mais simples.
+        - paragraph [ref=e49]: Nascido e arquitetado do zero na UniFio, a plataforma processa a geografia da cidade. Uma tecnologia invisível focada exclusivamente em salvar horas produtivas que eram desperdiçadas na região.
+        - generic [ref=e50]:
+          - button "Começar a economizar grátis" [ref=e51]
+          - button "Ver rotas da UniFio" [ref=e52]:
+            - text: Ver rotas da UniFio
+            - img [ref=e53]
+        - generic [ref=e56]:
+          - img [ref=e58]
+          - generic [ref=e60]:
+            - generic [ref=e61]: Continue no WhatsApp
+            - generic [ref=e62]: Comece no UniGo. Continue no WhatsApp.
+            - generic [ref=e63]: O app ajuda a encontrar a rota. Depois do match, motorista e passageiro podem alinhar horario, ponto de encontro e valor com mais liberdade.
+        - button "Ja tenho uma conta" [ref=e64]
+      - generic [ref=e65]:
+        - generic [ref=e67]:
+          - img [ref=e69]
+          - generic [ref=e71]:
+            - generic [ref=e72]: Mais economia
+            - generic [ref=e73]: Divida custos no trajeto e reduza o peso do deslocamento na rotina academica.
+        - generic [ref=e75]:
+          - img [ref=e77]
+          - generic [ref=e79]:
+            - generic [ref=e80]: Mapeamento real e tático
+            - generic [ref=e81]: Acompanhamos o real fluxo logístico de Ourinhos, garantindo embarques orgânicos e seguros sem depender de rodízios externos.
+        - generic [ref=e83]:
+          - img [ref=e85]
+          - generic [ref=e87]:
+            - generic [ref=e88]: Exclusividade UniFio
+            - generic [ref=e89]: "Desenvolvido focado na proteção: garante que você divida o combustível apenas com membros verificados pela instituição."
+    - generic [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]: Rotas ate a UniFio
+        - heading "Pontos reais de Ourinhos conectados ao campus." [level=2] [ref=e94]
+        - paragraph [ref=e95]: Uma leitura visual de como o UniGo pode organizar caronas entre moradias estudantis, bairros e o trajeto ate a UniFio.
+        - generic [ref=e96]:
+          - generic [ref=e97]: 3 origens de exemplo
+          - generic [ref=e98]: Destino UniFio
+          - generic [ref=e99]: Leitura mobile
+      - generic [ref=e100]:
+        - generic [ref=e101]:
+          - generic [ref=e102]:
+            - generic [ref=e103]:
+              - generic [ref=e104]: Mapa de exemplo
+              - generic [ref=e105]: Fluxos da cidade ate o Campus UniFio.
+            - generic [ref=e106]:
+              - generic [ref=e107]: 3 pontos reais
+              - generic [ref=e108]: Destino UniFio
+          - generic [ref=e109]:
+            - img [ref=e112]
+            - img [ref=e121]
+            - img [ref=e128]
+            - img [ref=e135]
+            - generic [ref=e140]:
+              - img "Logo oficial da UniFio" [ref=e142]
+              - generic [ref=e143]:
+                - generic [ref=e144]: Destino
+                - generic [ref=e145]: Campus UniFio
+                - generic [ref=e146]: Agua do Cateto
+          - generic [ref=e147]:
+            - article [ref=e148]:
+              - generic [ref=e149]:
+                - img [ref=e151]
+                - generic [ref=e153]:
+                  - generic [ref=e156]: Moradias
+                  - heading "Republicas e moradias estudantis" [level=3] [ref=e157]
+              - generic [ref=e158]: Bairros universitarios e entorno
+              - paragraph [ref=e159]: Uma base natural para caronas recorrentes, com alunos que costumam seguir horarios parecidos durante a semana.
+            - article [ref=e160]:
+              - generic [ref=e161]:
+                - img [ref=e163]
+                - generic [ref=e165]:
+                  - generic [ref=e168]: Centro
+                  - heading "Centro de Ourinhos" [level=3] [ref=e169]
+              - generic [ref=e170]: Avenidas, pracas e eixos centrais
+              - paragraph [ref=e171]: Ponto estrategico para encontros rapidos, embarques e conexoes entre bairros antes da chegada ao campus.
+            - article [ref=e172]:
+              - generic [ref=e173]:
+                - img [ref=e175]
+                - generic [ref=e177]:
+                  - generic [ref=e180]: Bairros
+                  - heading "Zonas residenciais" [level=3] [ref=e181]
+              - generic [ref=e182]: Zonas leste, oeste e sul
+              - paragraph [ref=e183]: Ajuda a aproximar alunos que saem de regioes proximas e podem dividir o trajeto de ida e volta com mais economia.
+        - generic [ref=e185]:
+          - img [ref=e187]
+          - generic [ref=e189]:
+            - generic [ref=e190]: Destino final
+            - generic [ref=e191]: Rodovia BR-153, s/n - Agua do Cateto
+            - generic [ref=e192]: O mapa mostra como diferentes pontos da rotina local podem convergir para o campus com mais organizacao e economia.
+    - generic [ref=e194]:
+      - generic [ref=e195]:
+        - generic [ref=e196]: Feito por alunos
+        - heading "Pensado a partir da rotina real da UniFio." [level=2] [ref=e197]
+        - paragraph [ref=e198]: O UniGo nasce para resolver um problema concreto de deslocamento e, ao mesmo tempo, mostrar como uma iniciativa local pode melhorar a experiencia da comunidade academica.
+      - generic [ref=e199]:
+        - article [ref=e200]:
+          - generic [ref=e201]:
+            - img [ref=e203]
+            - generic [ref=e205]:
+              - generic [ref=e206]: Economia real
+              - heading "Menos custo para quem vai ao campus todos os dias" [level=3] [ref=e207]
+              - paragraph [ref=e208]: O UniGo ajuda a dividir despesas de deslocamento e torna a rotina academica mais viavel para quem depende do trajeto ate a UniFio.
+        - article [ref=e209]:
+          - generic [ref=e210]:
+            - img [ref=e212]
+            - generic [ref=e214]:
+              - generic [ref=e215]: Experiencia do aluno
+              - heading "Uma rotina mais simples, conectada e organizada" [level=3] [ref=e216]
+              - paragraph [ref=e217]: A carona deixa de ser improviso e passa a acontecer em um fluxo mais claro, rapido e facil de combinar.
+        - article [ref=e218]:
+          - generic [ref=e219]:
+            - img [ref=e221]
+            - generic [ref=e223]:
+              - generic [ref=e224]: Potencial institucional
+              - heading "Uma ferramenta funcional testada no campus" [level=3] [ref=e225]
+              - paragraph [ref=e226]: Uma estrutura tecnológica sólida que moderniza a vida no campus e reitera o espírito de inovação sustentável da UniFio.
+    - generic [ref=e228]:
+      - generic [ref=e229]:
+        - generic [ref=e230]: Como funciona
+        - heading "Simples para o aluno. Natural no mobile." [level=2] [ref=e231]
+        - paragraph [ref=e232]: "O fluxo foi desenhado para resolver o que mais importa: encontrar uma rota compativel, validar a comunidade e combinar a carona sem atrito."
+      - generic [ref=e233]:
+        - article [ref=e234]:
+          - generic [ref=e235]:
+            - img [ref=e237]
+            - generic [ref=e239]:
+              - generic [ref=e240]: Passo 1
+              - heading "Entre com sua conta UniFio" [level=3] [ref=e241]
+              - paragraph [ref=e242]: O acesso comeca no contexto da comunidade academica e deixa a experiencia mais clara desde o primeiro toque.
+        - article [ref=e243]:
+          - generic [ref=e244]:
+            - img [ref=e246]
+            - generic [ref=e248]:
+              - generic [ref=e249]: Passo 2
+              - heading "Encontre ou ofereca sua rota" [level=3] [ref=e250]
+              - paragraph [ref=e251]: Veja quem faz um trajeto parecido com o seu ou publique uma carona em poucos passos.
+        - article [ref=e252]:
+          - generic [ref=e253]:
+            - img [ref=e255]
+            - generic [ref=e257]:
+              - generic [ref=e258]: Passo 3
+              - heading "Converse e combine com liberdade" [level=3] [ref=e259]
+              - generic [ref=e260]:
+                - img [ref=e261]
+                - text: WhatsApp tambem
+              - paragraph [ref=e263]: Depois do match, motorista e passageiro podem alinhar horario, ponto de encontro e valor com mais praticidade.
+    - generic [ref=e266]:
+      - text: Mais que uma carona
+      - heading "Uma solucao local com potencial real para a vida no campus." [level=2] [ref=e267]
+      - paragraph [ref=e268]: O UniGo ajuda alunos a economizar no trajeto agora e abre espaco para uma experiencia universitaria mais conectada, moderna e organizada dentro da UniFio.
+      - generic [ref=e269]:
+        - generic [ref=e270]:
+          - generic [ref=e271]: Economia no trajeto
+          - generic [ref=e272]: Ajuda alunos a reduzir custos no deslocamento sem depender de combinacoes informais e espalhadas.
+        - generic [ref=e273]:
+          - generic [ref=e274]: Experiencia estudantil
+          - generic [ref=e275]: Torna a ida ao campus mais leve, mais previsivel e mais conectada com a rotina real da UniFio.
+        - generic [ref=e276]:
+          - generic [ref=e277]: Valor institucional
+          - generic [ref=e278]: Une engenharia de software e utilidade social imediata, entregando à coordenação uma ferramenta viva de altíssimo impacto diário.

@@ -29,6 +29,8 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [hasToken, setHasToken] = useState(false);
+  const [isLandingScrolled, setIsLandingScrolled] = useState(false);
+  const [isLandingNavVisible, setIsLandingNavVisible] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -40,7 +42,43 @@ export default function Navbar() {
     setIsMenuOpen(false);
     setIsDropdownOpen(false);
     setHasToken(Boolean(localStorage.getItem('userToken')));
+    setIsLandingNavVisible(true);
+    setIsLandingScrolled(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isLandingPage) {
+      setIsLandingNavVisible(true);
+      setIsLandingScrolled(false);
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+
+    const updateNavbarState = () => {
+      const currentScrollY = window.scrollY;
+      const hasScrolled = currentScrollY > 24;
+
+      setIsLandingScrolled(hasScrolled);
+
+      if (isMenuOpen || currentScrollY <= 24) {
+        setIsLandingNavVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 110) {
+        setIsLandingNavVisible(false);
+      } else if (currentScrollY < lastScrollY - 6) {
+        setIsLandingNavVisible(true);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    updateNavbarState();
+    window.addEventListener('scroll', updateNavbarState, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', updateNavbarState);
+    };
+  }, [isLandingPage, isMenuOpen]);
 
   useEffect(() => {
     if (isPublicPage) {
@@ -83,78 +121,107 @@ export default function Navbar() {
   };
 
   const menuItems = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/passenger-dashboard', label: 'Buscar Carona' },
-    { href: '/driver-dashboard', label: 'Oferecer Carona' },
-    { href: '/prime', label: 'Institucional' },
+    { href: '/dashboard', label: 'Painel' },
+    { href: '/passenger-dashboard', label: 'Buscar carona' },
+    { href: '/driver-dashboard', label: 'Oferecer carona' },
+    { href: '/prime', label: 'Visao UniFio' },
   ];
 
   const publicLinks = isLandingPage
     ? landingLinks
     : landingLinks.map((item) => ({ ...item, href: `/${item.href}` }));
 
-  const primaryHref = hasToken
-    ? '/dashboard'
-    : isAuthPage
-      ? pathname === '/login'
-        ? '/register'
-        : '/login'
-      : '/register';
-
-  const primaryLabel = hasToken
-    ? 'Abrir dashboard'
-    : isAuthPage
-      ? pathname === '/login'
-        ? 'Criar conta'
-        : 'Entrar'
-      : 'Criar conta';
-
-  const secondaryHref = isAuthPage ? '/' : '/login';
-  const secondaryLabel = isAuthPage ? 'Voltar ao site' : 'Entrar';
+  const primaryHref = hasToken ? '/dashboard' : '/register';
+  const primaryLabel = hasToken ? 'Abrir painel' : 'Criar conta';
 
   const isActive = (href: string) =>
     pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`));
 
+  const useLandingScrollBehavior = isLandingPage;
+  const publicNavSolid = !useLandingScrollBehavior || isLandingScrolled || isMenuOpen;
+  const publicNavClasses = publicNavSolid
+    ? 'border-b border-white/70 bg-white/82 shadow-[0_18px_42px_-28px_rgba(15,23,42,0.22)] backdrop-blur-xl'
+    : 'border-b border-transparent bg-white/42 shadow-none backdrop-blur-md';
+  const publicInnerHeight = isAuthPage
+    ? 'h-[4.15rem] md:h-[4.5rem]'
+    : publicNavSolid
+      ? 'h-[4.35rem] md:h-[4.9rem]'
+      : 'h-[4.9rem] md:h-[5.4rem]';
+  const publicNavTransition = useLandingScrollBehavior
+    ? isLandingNavVisible
+      ? { duration: 0.46, ease: [0.16, 1, 0.3, 1] as const }
+      : { duration: 0.24, ease: [0.4, 0, 1, 1] as const }
+    : { duration: 0.22, ease: [0.22, 1, 0.36, 1] as const };
+
   if (isPublicPage) {
     return (
-      <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/70 bg-white/78 shadow-sm backdrop-blur-xl">
-        <div className="container mx-auto flex h-[4.6rem] items-center justify-between px-4 md:h-20">
+      <motion.nav
+        initial={false}
+        animate={{
+          y: useLandingScrollBehavior && !isLandingNavVisible ? '-110%' : '0%',
+        }}
+        transition={publicNavTransition}
+        className={`fixed left-0 right-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${publicNavClasses}`}
+      >
+        <div
+          className={`container mx-auto flex items-center justify-between px-4 transition-[height] duration-300 ${publicInnerHeight}`}
+        >
           <Link href="/" className="flex items-center gap-3">
-            <BrandLogo size="sm" />
+            <BrandLogo size="sm" compact={isAuthPage} />
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8">
-            {publicLinks.map((item) => (
-              <Link key={item.href} href={item.href} className="nav-link">
-                {item.label}
-              </Link>
-            ))}
-          </div>
+          {isLandingPage ? (
+            <div className="hidden lg:flex items-center gap-8">
+              {publicLinks.map((item) => (
+                <Link key={item.href} href={item.href} className="nav-link">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ) : null}
 
-          <div className="hidden md:flex items-center gap-3">
-            <Link href={secondaryHref} className="btn-secondary">
-              {secondaryLabel}
-            </Link>
-            <Link href={primaryHref} className="btn-primary">
-              {primaryLabel}
-            </Link>
-          </div>
+          {isAuthPage ? (
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/" className="btn-ghost">
+                Voltar ao site
+              </Link>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/login" className="btn-secondary">
+                Entrar
+              </Link>
+              <Link href={primaryHref} className="btn-primary">
+                {primaryLabel}
+              </Link>
+            </div>
+          )}
 
           <div className="flex items-center gap-2 md:hidden">
-            <Link
-              href={secondaryHref}
-              className="px-1 text-[0.83rem] font-semibold text-slate-700 transition-colors hover:text-blue-800"
-            >
-              {isAuthPage ? 'Voltar' : secondaryLabel}
-            </Link>
+            {isAuthPage ? (
+              <Link
+                href="/"
+                className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white/86 px-3.5 text-[0.78rem] font-semibold text-slate-700 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.35)] transition-colors hover:border-blue-200 hover:text-blue-900"
+              >
+                Voltar
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-1 text-[0.83rem] font-semibold text-slate-700 transition-colors hover:text-blue-800"
+                >
+                  Entrar
+                </Link>
 
-            <Link
-              href={primaryHref}
-              className="inline-flex h-10 items-center justify-center rounded-full bg-slate-950 px-3.5 text-[0.75rem] font-semibold text-white shadow-[0_18px_36px_-24px_rgba(15,23,42,0.7)] transition-colors hover:bg-blue-900"
-            >
-              <span className="hidden min-[380px]:inline">{primaryLabel}</span>
-              <span className="min-[380px]:hidden">{hasToken ? 'App' : 'Criar'}</span>
-            </Link>
+                <Link
+                  href={primaryHref}
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-slate-950 px-4 text-[0.75rem] font-semibold text-white shadow-[0_18px_36px_-24px_rgba(15,23,42,0.7)] transition-colors hover:bg-blue-900"
+                >
+                  {hasToken ? 'Painel' : 'Criar conta'}
+                </Link>
+              </>
+            )}
 
             {isLandingPage ? (
               <button
@@ -199,7 +266,7 @@ export default function Navbar() {
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
     );
   }
 
@@ -208,7 +275,7 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <BrandLogo size="sm" caption="UniFio" />
+            <BrandLogo size="sm" compact caption="Comunidade UniFio" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
@@ -217,9 +284,7 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={`text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'text-blue-700'
-                    : 'text-slate-600 hover:text-blue-700'
+                  isActive(item.href) ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700'
                 }`}
               >
                 {item.label}
@@ -246,7 +311,7 @@ export default function Navbar() {
                   {userData?.image ? (
                     <Image
                       src={userData.image}
-                      alt={userData.name || 'Usuário'}
+                      alt={userData.name || 'Usuario'}
                       width={36}
                       height={36}
                       className="h-full w-full object-cover"
@@ -257,7 +322,7 @@ export default function Navbar() {
                 </div>
                 <div className="text-left">
                   <div className="text-sm font-semibold text-slate-800">
-                    {userData?.name || 'Usuário'}
+                    {userData?.name || 'Usuario'}
                   </div>
                   <div className="text-xs text-slate-500">Comunidade UniFio</div>
                 </div>
@@ -281,21 +346,21 @@ export default function Navbar() {
                       className="flex items-center gap-3 px-4 py-3 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                     >
                       <FaUser className="text-slate-400" />
-                      <span>Meu Perfil</span>
+                      <span>Meu perfil</span>
                     </Link>
                     <Link
                       href="/ride-history"
                       className="flex items-center gap-3 px-4 py-3 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                     >
                       <FaHistory className="text-slate-400" />
-                      <span>Histórico</span>
+                      <span>Historico</span>
                     </Link>
                     <Link
                       href="/settings"
                       className="flex items-center gap-3 px-4 py-3 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                     >
                       <FaCog className="text-slate-400" />
-                      <span>Configurações</span>
+                      <span>Configuracoes</span>
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -334,7 +399,7 @@ export default function Navbar() {
                   {userData?.image ? (
                     <Image
                       src={userData.image}
-                      alt={userData.name || 'Usuário'}
+                      alt={userData.name || 'Usuario'}
                       width={44}
                       height={44}
                       className="h-full w-full object-cover"
@@ -345,7 +410,7 @@ export default function Navbar() {
                 </div>
                 <div>
                   <div className="font-semibold text-slate-900">
-                    {userData?.name || 'Usuário'}
+                    {userData?.name || 'Usuario'}
                   </div>
                   <div className="text-sm text-slate-500">
                     {userData?.email || 'usuario@unifio.edu.br'}
@@ -373,21 +438,21 @@ export default function Navbar() {
                   className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Meu Perfil
+                  Meu perfil
                 </Link>
                 <Link
                   href="/ride-history"
                   className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Histórico
+                  Historico
                 </Link>
                 <Link
                   href="/settings"
                   className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Configurações
+                  Configuracoes
                 </Link>
                 <button
                   onClick={handleLogout}

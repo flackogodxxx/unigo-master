@@ -1,217 +1,187 @@
 'use client';
 
-import { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter, usePathname } from 'next/navigation';
-import {
-    FaCar,
-    FaTimes,
-    FaTachometerAlt,
-    FaRoute,
-    FaHistory,
-    FaUserCircle,
-    FaSignOutAlt,
-    FaCog,
-    FaWallet
-} from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+  FaCog,
+  FaCompass,
+  FaHistory,
+  FaSignOutAlt,
+  FaTimes,
+  FaUser,
+  FaWallet,
+} from 'react-icons/fa';
+import BrandLogo from './BrandLogo';
 
 interface SidebarProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
+const menuItems = [
+  { label: 'Inicio', path: '/dashboard', icon: FaCompass },
+  { label: 'Impacto', path: '/wallet', icon: FaWallet },
+  { label: 'Historico', path: '/ride-history', icon: FaHistory },
+  { label: 'Minha conta', path: '/profile', icon: FaUser },
+  { label: 'Configuracoes', path: '/settings', icon: FaCog },
+] as const;
+
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-    const router = useRouter();
-    const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [userName, setUserName] = useState('Usuario UniFio');
+  const [userImage, setUserImage] = useState('');
 
-    // Fechar o sidebar quando mudar de página
-    useEffect(() => {
-        onClose();
-    }, [pathname, onClose]);
+  useEffect(() => {
+    setUserName(localStorage.getItem('userName') || 'Usuario UniFio');
+    setUserImage(localStorage.getItem('userImage') || '');
+  }, [isOpen]);
 
-    // Impedir o scroll quando o sidebar estiver aberto
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [isOpen]);
+  useEffect(() => {
+    onClose();
+  }, [pathname, onClose]);
 
-    const menuItems = [
-        { label: 'Dashboard', path: '/dashboard', icon: FaTachometerAlt },
-        { label: 'Minha Carteira', path: '/wallet', icon: FaWallet },
-        { label: 'Buscar Carona', path: '/passenger-dashboard', icon: FaRoute },
-        { label: 'Oferecer Carona', path: '/driver-dashboard', icon: FaCar },
-        { label: 'Histórico', path: '/ride-history', icon: FaHistory }
-    ];
-
-    const handleNavigation = (path: string) => {
-        router.push(path);
-        onClose();
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
     };
+  }, [isOpen]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userImage');
-        router.push('/login');
-        onClose();
-    };
+  const navigate = (path: string) => {
+    router.push(path);
+    onClose();
+  };
 
-    const goToProfile = () => {
-        router.push('/profile');
-        onClose();
-    };
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userImage');
+    localStorage.removeItem('userEmail');
+    router.push('/login');
+    onClose();
+  };
 
-    // Obter dados do usuário do localStorage
-    const userName = typeof window !== 'undefined' ? localStorage.getItem('userName') || 'Usuário' : 'Usuário';
-    const userImage = typeof window !== 'undefined' ? localStorage.getItem('userImage') || '' : '';
-    const userRA = typeof window !== 'undefined' ? localStorage.getItem('userRA') || '000000' : '000000';
+  return (
+    <AnimatePresence>
+      {isOpen ? (
+        <>
+          <motion.button
+            type="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px]"
+            onClick={onClose}
+            aria-label="Fechar menu lateral"
+          />
 
-    // Variáveis de animação para os botões do menu
-    const buttonVariants = {
-        initial: { opacity: 0, y: 20 },
-        animate: (index: number) => ({
-            opacity: 1,
-            y: 0,
-            transition: { delay: 0.1 + index * 0.05, duration: 0.3 }
-        }),
-        hover: { scale: 1.03, backgroundColor: '#EFF6FF' },
-        tap: { scale: 0.97 }
-    };
+          <motion.aside
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+            className="fixed inset-y-0 left-0 z-50 flex w-[18.5rem] flex-col border-r border-white/70 bg-white/95 shadow-[0_30px_60px_-36px_rgba(15,23,42,0.42)] backdrop-blur-xl"
+            style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.75rem)' }}
+          >
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="text-left"
+              >
+                <BrandLogo size="sm" caption="Comunidade UniFio" />
+              </button>
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    {/* Overlay */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.5 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 bg-black z-40"
-                        onClick={onClose}
-                    />
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition-colors hover:text-slate-900"
+              >
+                <FaTimes />
+              </button>
+            </div>
 
-                    {/* Sidebar */}
-                    <motion.div
-                        initial={{ x: '-100%' }}
-                        animate={{ x: 0 }}
-                        exit={{ x: '-100%' }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="fixed left-0 top-0 bottom-0 w-72 bg-white shadow-lg z-50 flex flex-col"
+            <div className="flex-1 overflow-y-auto px-3 py-4">
+              <div className="space-y-2">
+                {menuItems.map((item) => {
+                  const active = pathname === item.path;
+
+                  return (
+                    <button
+                      key={item.path}
+                      type="button"
+                      onClick={() => navigate(item.path)}
+                      className={`flex w-full items-center gap-3 rounded-[20px] px-3 py-3 text-left transition-colors ${
+                        active
+                          ? 'bg-blue-50 text-blue-800'
+                          : 'text-slate-600 hover:bg-slate-50'
+                      }`}
                     >
-                        {/* Header with logo and close button */}
-                        <div className="flex items-center justify-between p-4 border-b border-slate-200">
-                            <motion.div
-                                className="flex items-center space-x-2 cursor-pointer"
-                                onClick={() => handleNavigation('/dashboard')}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <div className="w-8 h-8 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
-                                    <FaCar className="text-white text-lg" />
-                                </div>
-                                <span className="text-xl font-bold text-blue-900">UniGo</span>
-                            </motion.div>
-                            <motion.button
-                                onClick={onClose}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600"
-                                whileHover={{ scale: 1.1, backgroundColor: '#E5E7EB' }}
-                                whileTap={{ scale: 0.9 }}
-                                aria-label="Fechar menu"
-                            >
-                                <FaTimes size={18} />
-                            </motion.button>
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
+                          active
+                            ? 'bg-white text-blue-700'
+                            : 'bg-slate-100 text-slate-500'
+                        }`}
+                      >
+                        <item.icon className="text-sm" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold">{item.label}</div>
+                        <div className="text-xs text-slate-500">
+                          Navegacao principal do produto
                         </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-                        {/* Navigation Menu */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                            {menuItems.map((item, index) => (
-                                <motion.button
-                                    key={item.path}
-                                    onClick={() => handleNavigation(item.path)}
-                                    className={`w-full p-3 rounded-lg flex items-center gap-3 transition-all ${pathname === item.path
-                                        ? 'bg-blue-50 text-blue-900 border border-blue-100'
-                                        : 'text-slate-600 hover:bg-slate-50 border border-transparent'
-                                        }`}
-                                    variants={buttonVariants}
-                                    initial="initial"
-                                    animate="animate"
-                                    whileHover="hover"
-                                    whileTap="tap"
-                                    custom={index}
-                                >
-                                    <item.icon className="text-lg" />
-                                    <span className="font-medium">{item.label}</span>
-                                </motion.button>
-                            ))}
-                        </div>
+            <div className="border-t border-slate-200 px-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate('/profile')}
+                className="flex w-full items-center gap-3 rounded-[22px] border border-slate-200 bg-slate-50/90 px-3 py-3 text-left"
+              >
+                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-sm font-semibold text-blue-800">
+                  {userImage ? (
+                    <Image
+                      src={userImage}
+                      alt={userName}
+                      width={44}
+                      height={44}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    userName.slice(0, 2).toUpperCase()
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-slate-900">
+                    {userName}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    Conta verificada da comunidade
+                  </div>
+                </div>
+              </button>
 
-                        {/* User Profile */}
-                        <div className="p-4 border-t border-slate-200">
-                            <motion.div
-                                className="flex items-center p-3 rounded-lg bg-blue-50 border border-blue-100 cursor-pointer"
-                                onClick={goToProfile}
-                                whileHover={{ scale: 1.02, backgroundColor: '#DBEAFE' }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <div className="flex-shrink-0 mr-3">
-                                    {userImage ? (
-                                        <motion.div
-                                            className="w-12 h-12 rounded-full overflow-hidden border border-slate-200"
-                                            whileHover={{ borderColor: '#3B82F6', borderWidth: '2px' }}
-                                        >
-                                            <Image
-                                                src={userImage}
-                                                alt={userName}
-                                                width={48}
-                                                height={48}
-                                                className="object-cover"
-                                            />
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center"
-                                            whileHover={{ backgroundColor: '#E5E7EB' }}
-                                        >
-                                            <FaUserCircle className="text-slate-500 text-2xl" />
-                                        </motion.div>
-                                    )}
-                                </div>
-                                <div>
-                                    <div className="font-medium">{userName}</div>
-                                    <div className="text-xs text-slate-500">RA: {userRA}</div>
-                                </div>
-                                <motion.div
-                                    className="ml-auto p-1 rounded-full"
-                                    whileHover={{ backgroundColor: '#DBEAFE' }}
-                                >
-                                    <FaCog size={14} className="text-blue-600" />
-                                </motion.div>
-                            </motion.div>
-
-                            <motion.button
-                                onClick={handleLogout}
-                                className="w-full mt-3 p-3 rounded-lg text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100 flex items-center justify-center gap-2"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0, transition: { delay: 0.3 } }}
-                                whileHover={{ scale: 1.02, backgroundColor: '#FEF2F2' }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <FaSignOutAlt />
-                                <span>Sair</span>
-                            </motion.button>
-                        </div>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
-    );
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[18px] border border-red-100 bg-red-50 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100"
+              >
+                <FaSignOutAlt />
+                Sair
+              </button>
+            </div>
+          </motion.aside>
+        </>
+      ) : null}
+    </AnimatePresence>
+  );
 }

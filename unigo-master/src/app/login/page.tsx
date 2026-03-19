@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { motion } from 'framer-motion';
@@ -18,20 +17,20 @@ import BrandLogo from '../components/BrandLogo';
 const highlights = [
   {
     icon: FaShieldAlt,
-    title: 'Acesso institucional',
-    text: 'O login existe para a comunidade UniFio e reforça uma experiência mais confiável.',
+    title: 'Comunidade validada',
+    text: 'O acesso com e-mail @unifio.edu.br deixa a experiencia mais segura e mais confiavel.',
   },
   {
     icon: FaComments,
-    title: 'Fluxo completo',
-    text: 'Quem entra já acessa busca de caronas, chat e rotinas recorrentes.',
+    title: 'Rotas e conversa no mesmo lugar',
+    text: 'Buscar, combinar e acompanhar sua rotina fica mais simples dentro do mesmo app.',
   },
   {
     icon: FaChartLine,
-    title: 'Dado para apresentação',
-    text: 'Cada acesso fortalece a narrativa institucional do projeto diante da faculdade.',
+    title: 'Pronto para uso real',
+    text: 'A experiencia foi pensada para parecer produto de verdade desde o primeiro acesso.',
   },
-];
+] as const;
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -56,7 +55,7 @@ export default function Login() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (!email.endsWith('@unifio.edu.br')) {
-        throw new Error('Por favor, use seu email universitário @unifio.edu.br');
+        throw new Error('Por favor, use seu email universitario @unifio.edu.br');
       }
 
       const userData = {
@@ -67,7 +66,7 @@ export default function Login() {
           .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
           .join(' '),
         email,
-        token: 'sim-jwt-token-' + Math.random().toString(36).substring(2),
+        token: `sim-jwt-token-${Math.random().toString(36).substring(2)}`,
         image: '',
       };
 
@@ -81,57 +80,49 @@ export default function Login() {
       setTimeout(() => {
         router.push('/dashboard');
       }, 1400);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao fazer login. Tente novamente.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao fazer login. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 pb-16 pt-28">
+    <main className="auth-shell">
       <div className="absolute inset-0 hero-pattern" />
       <div className="absolute inset-0 wave-pattern opacity-65" />
 
       <div className="container relative z-10 mx-auto max-w-6xl">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <motion.section
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
             className="hidden lg:block"
           >
-            <span className="brand-badge">Acesso institucional UniFio</span>
+            <span className="brand-badge">Acesso UniFio</span>
 
             <div className="mt-6">
-              <BrandLogo
-                size="lg"
-                caption="Mobilidade universitária em desenvolvimento"
-              />
+              <BrandLogo size="lg" caption="Mobilidade universitaria para quem vive o campus" />
             </div>
 
             <h1 className="font-display mt-8 max-w-2xl text-5xl leading-[0.96] text-slate-950">
-              Entre no ambiente UniGo x UniFio e acompanhe a rotina da comunidade no app.
+              Entre e continue sua rotina ate a UniFio com mais clareza.
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Este acesso conecta a comunidade UniFio a uma experiência completa
-              de mobilidade acadêmica. Quanto melhor a jornada aqui, mais forte
-              fica a apresentação institucional do projeto.
+              Use seu e-mail universitario para acessar um ambiente feito para combinar
+              caronas com economia, conversa facil e leitura clara no mobile.
             </p>
 
-            <div className="mt-8 space-y-4">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
               {highlights.map((item) => (
-                <div key={item.title} className="metric-card">
+                <div key={item.title} className="auth-highlight">
                   <div className="feature-icon">
                     <item.icon className="text-lg" />
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold text-slate-900">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    {item.text}
-                  </p>
+                  <h3 className="mt-5 text-lg font-semibold text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -141,26 +132,15 @@ export default function Login() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08 }}
-            className="brand-panel w-full max-w-lg p-6 sm:p-8 lg:ml-auto"
+            className="auth-card w-full max-w-lg lg:ml-auto"
           >
-            <div className="flex items-center justify-between gap-4">
-              <BrandLogo size="sm" caption="Uso exclusivo UniFio" />
-              <button
-                onClick={() => router.push('/')}
-                className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
-              >
-                Voltar ao site
-              </button>
-            </div>
-
-            <div className="mt-6">
-              <span className="brand-badge">Login institucional</span>
-              <h2 className="font-display mt-4 text-4xl text-slate-950">
-                Acesse sua conta
+            <div>
+              <span className="brand-badge">Entrar</span>
+              <h2 className="font-display mt-4 text-[2.25rem] leading-[0.98] text-slate-950 sm:text-4xl">
+                Acesse sua conta UniGo
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Entre com seu e-mail universitário para continuar no UniGo x
-                UniFio.
+                Entre com seu e-mail da UniFio para continuar no app e ver suas rotas.
               </p>
             </div>
 
@@ -171,12 +151,8 @@ export default function Login() {
                 className="mt-8 rounded-[24px] border border-emerald-200 bg-emerald-50 p-6 text-center"
               >
                 <FaCheckCircle className="mx-auto text-5xl text-emerald-500" />
-                <h3 className="mt-4 text-xl font-semibold text-slate-900">
-                  Login realizado com sucesso
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Redirecionando para o dashboard da operação UniFio.
-                </p>
+                <h3 className="mt-4 text-xl font-semibold text-slate-900">Entrada confirmada</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Abrindo seu painel agora.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -191,11 +167,8 @@ export default function Login() {
                 ) : null}
 
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-sm font-semibold text-slate-700"
-                  >
-                    Email universitário
+                  <label htmlFor="email" className="mb-2 block text-sm font-semibold text-slate-700">
+                    Email da UniFio
                   </label>
                   <div className="relative">
                     <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -204,7 +177,7 @@ export default function Login() {
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                      className="auth-input"
                       placeholder="seu.email@unifio.edu.br"
                       required
                     />
@@ -225,8 +198,8 @@ export default function Login() {
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
-                      placeholder="••••••••"
+                      className="auth-input"
+                      placeholder="Sua senha"
                       required
                     />
                   </div>
@@ -257,7 +230,7 @@ export default function Login() {
 
             {!loginSuccess ? (
               <div className="mt-6 text-center text-sm text-slate-600">
-                Ainda não tem uma conta?{' '}
+                Ainda nao tem uma conta?{' '}
                 <button
                   onClick={() => router.push('/register')}
                   className="font-semibold text-blue-800 transition-colors hover:text-blue-600"

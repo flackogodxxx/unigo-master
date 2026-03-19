@@ -1,236 +1,323 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
-import { FaTimes, FaPaperPlane, FaMapMarkerAlt, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaInfoCircle,
+  FaMapMarkerAlt,
+  FaPaperPlane,
+  FaTimes,
+  FaWhatsapp,
+} from 'react-icons/fa';
 
 interface Message {
-    id: string;
-    sender: 'user' | 'other';
-    text: string;
-    time: string;
+  id: string;
+  sender: 'user' | 'other';
+  text: string;
+  time: string;
 }
 
 export interface ChatModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    driverName: string;
-    rideOrigin: string;
-    rideDestination: string;
-    rideDate: string;
-    rideTime: string;
-    ridePrice: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  driverName: string;
+  rideOrigin: string;
+  rideDestination: string;
+  rideDate: string;
+  rideTime: string;
+  ridePrice: string;
 }
 
-export default function ChatModal({ isOpen, onClose, onConfirm, driverName, rideOrigin, rideDestination, rideDate, rideTime, ridePrice }: ChatModalProps) {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [newMessage, setNewMessage] = useState('');
-    const [isConfirmed, setIsConfirmed] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+const getTimeLabel = () =>
+  new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-    const isCombinar = ridePrice === 'A combinar';
+export default function ChatModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  driverName,
+  rideOrigin,
+  rideDestination,
+  rideDate,
+  rideTime,
+  ridePrice,
+}: ChatModalProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        if (isOpen) {
-            setMessages([
-                {
-                    id: '1',
-                    sender: 'other',
-                    text: `Olá! Tenho ${isCombinar ? 'uma vaga disponível' : `uma vaga por ${ridePrice}`} para ${rideDestination} no dia ${rideDate} às ${rideTime}. Tem interesse?`,
-                    time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-                }
-            ]);
-            setIsConfirmed(false);
-            setTimeout(() => inputRef.current?.focus(), 300);
-        }
-    }, [isOpen, driverName, rideDestination, rideDate, rideTime, ridePrice, isCombinar]);
+  const priceLabel = ridePrice || 'A combinar';
+  const rideMoment = rideTime ? `${rideDate} · ${rideTime}` : rideDate;
+  const quickReplies = useMemo(
+    () =>
+      priceLabel === 'A combinar'
+        ? [
+            'Tenho interesse nessa rota',
+            'Qual valor você imagina?',
+            'Podemos alinhar um ponto no centro?',
+            'Conseguimos combinar ida e volta?',
+          ]
+        : [
+            'Tenho interesse nessa vaga',
+            'Esse horário ainda está disponível?',
+            'Podemos alinhar o ponto de encontro?',
+            'Consigo confirmar ainda hoje?',
+          ],
+    [priceLabel]
+  );
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
 
-    const quickReplies = isCombinar
-        ? ['Qual o valor?', 'Tenho interesse!', 'Saio do centro, serve?', 'Posso combinar o local?']
-        : ['Tenho interesse!', 'Tem vaga ainda?', 'Pode me pegar no centro?', 'Que horas exatamente?'];
+    setMessages([
+      {
+        id: 'seed-1',
+        sender: 'other',
+        text:
+          priceLabel === 'A combinar'
+            ? `Oi! Tenho uma vaga nessa rota para ${rideDestination}. Se fizer sentido para você, podemos alinhar horário, ponto e valor por aqui.`
+            : `Oi! Tenho uma vaga disponível para ${rideDestination} por ${priceLabel}. Se quiser, já alinhamos os detalhes da saída por aqui.`,
+        time: getTimeLabel(),
+      },
+    ]);
+    setNewMessage('');
+    setIsConfirmed(false);
 
-    const handleSend = () => {
-        if (!newMessage.trim()) return;
+    const focusTimer = window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, 260);
 
-        const userMsg: Message = {
-            id: Date.now().toString(),
-            sender: 'user',
-            text: newMessage.trim(),
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        };
+    return () => window.clearTimeout(focusTimer);
+  }, [isOpen, priceLabel, rideDestination]);
 
-        setMessages(prev => [...prev, userMsg]);
-        setNewMessage('');
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, isConfirmed]);
 
-        // Simulated auto-reply
-        setTimeout(() => {
-            const replies = [
-                'Pode sim! Combinado.',
-                'Perfeito, te espero no ponto!',
-                'Beleza, vou te mandar a localização exata.',
-                'Show! Qualquer coisa me avisa.',
-                'Tudo certo, até lá!'
-            ];
-            const autoReply: Message = {
-                id: (Date.now() + 1).toString(),
-                sender: 'other',
-                text: replies[Math.floor(Math.random() * replies.length)],
-                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-            };
-            setMessages(prev => [...prev, autoReply]);
-        }, 1200);
-    };
+  const handleSend = () => {
+    const trimmed = newMessage.trim();
 
-    const handleConfirmRide = () => {
-        setIsConfirmed(true);
-        onConfirm();
-        setTimeout(() => {
-            onClose();
-        }, 2500);
-    };
+    if (!trimmed) {
+      return;
+    }
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
+    setMessages((current) => [
+      ...current,
+      {
+        id: `user-${Date.now()}`,
+        sender: 'user',
+        text: trimmed,
+        time: getTimeLabel(),
+      },
+    ]);
+    setNewMessage('');
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 50 }}
-                        className="bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-lg h-[85vh] sm:h-[600px] flex flex-col overflow-hidden"
-                    >
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-blue-900 to-blue-700 p-4 text-white flex items-center justify-between flex-shrink-0">
-                            <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold flex-shrink-0">
-                                    {driverName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                                </div>
-                                <div className="min-w-0">
-                                    <h3 className="font-bold text-sm truncate">{driverName}</h3>
-                                    <p className="text-blue-200 text-xs">Online agora</p>
-                                </div>
-                            </div>
-                            <button onClick={onClose} className="text-white/70 hover:text-white p-2 rounded-full bg-white/10">
-                                <FaTimes />
-                            </button>
-                        </div>
+    window.setTimeout(() => {
+      const cannedReplies = [
+        'Perfeito, isso funciona para mim.',
+        'Boa, consigo sair nesse horário.',
+        'Fechado. Se quiser, também podemos continuar no WhatsApp.',
+        'Tudo certo. Vou te mandar o ponto certinho.',
+      ];
 
-                        {/* Ride Info Banner */}
-                        <div className="bg-blue-50 border-b border-blue-100 px-4 py-3 flex-shrink-0">
-                            <div className="flex items-center gap-2 text-xs text-blue-700">
-                                <FaMapMarkerAlt className="flex-shrink-0" />
-                                <span className="truncate">{rideOrigin} → {rideDestination}</span>
-                            </div>
-                            <div className="flex items-center gap-3 mt-1 text-xs text-blue-600">
-                                <span className="flex items-center gap-1">
-                                    <FaCalendarAlt /> {rideDate} às {rideTime}
-                                </span>
-                                <span className="font-bold">{ridePrice}</span>
-                            </div>
-                        </div>
+      setMessages((current) => [
+        ...current,
+        {
+          id: `other-${Date.now()}`,
+          sender: 'other',
+          text: cannedReplies[Math.floor(Math.random() * cannedReplies.length)],
+          time: getTimeLabel(),
+        },
+      ]);
+    }, 850);
+  };
 
-                        {isConfirmed ? (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="flex-1 flex flex-col items-center justify-center p-8 text-center"
-                            >
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ type: 'spring' }}
-                                    className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4 text-3xl sm:text-4xl"
-                                >
-                                    ✓
-                                </motion.div>
-                                <h4 className="text-xl font-bold text-slate-800 mb-2">Carona Confirmada!</h4>
-                                <p className="text-slate-500 text-sm">Combine os detalhes finais pelo chat. Boa viagem!</p>
-                            </motion.div>
-                        ) : (
-                            <>
-                                {/* Messages */}
-                                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-slate-50">
-                                    {/* Info tip */}
-                                    <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-xs text-amber-700">
-                                        <FaInfoCircle className="mt-0.5 flex-shrink-0" />
-                                        <span>Use o chat para combinar detalhes da carona. O app é gratuito — nenhuma taxa é cobrada.</span>
-                                    </div>
+  const handleConfirmRide = () => {
+    setIsConfirmed(true);
+    onConfirm();
+  };
 
-                                    {messages.map((msg) => (
-                                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 ${
-                                                msg.sender === 'user'
-                                                    ? 'bg-blue-600 text-white rounded-br-md'
-                                                    : 'bg-white text-slate-800 border border-slate-200 rounded-bl-md shadow-sm'
-                                            }`}>
-                                                <p className="text-sm leading-relaxed">{msg.text}</p>
-                                                <p className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-blue-200' : 'text-slate-400'}`}>
-                                                    {msg.time}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    <div ref={messagesEndRef} />
-                                </div>
+  const handleWhatsAppContinue = () => {
+    const summary = `UniGo%0A${encodeURIComponent(
+      `${driverName} · ${rideOrigin} → ${rideDestination} · ${rideMoment} · ${priceLabel}`
+    )}`;
+    window.open(`https://api.whatsapp.com/send?text=${summary}`, '_blank', 'noopener,noreferrer');
+  };
 
-                                {/* Quick Replies */}
-                                <div className="px-4 py-2 border-t border-slate-100 flex gap-2 overflow-x-auto flex-shrink-0 bg-white">
-                                    {quickReplies.map((reply, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => { setNewMessage(reply); inputRef.current?.focus(); }}
-                                            className="whitespace-nowrap px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-700 rounded-full text-xs border border-slate-200 transition-colors flex-shrink-0"
-                                        >
-                                            {reply}
-                                        </button>
-                                    ))}
-                                </div>
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSend();
+    }
+  };
 
-                                {/* Input + Confirm */}
-                                <div className="px-4 py-3 border-t border-slate-200 flex-shrink-0 bg-white">
-                                    <div className="flex gap-2 mb-3">
-                                        <input
-                                            ref={inputRef}
-                                            type="text"
-                                            value={newMessage}
-                                            onChange={(e) => setNewMessage(e.target.value)}
-                                            onKeyDown={handleKeyDown}
-                                            placeholder="Digite sua mensagem..."
-                                            className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        />
-                                        <button
-                                            onClick={handleSend}
-                                            disabled={!newMessage.trim()}
-                                            className="w-9 h-9 sm:w-10 sm:h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center hover:bg-blue-700 disabled:bg-slate-300 transition-colors flex-shrink-0"
-                                        >
-                                            <FaPaperPlane className="text-sm" />
-                                        </button>
-                                    </div>
-                                    <button
-                                        onClick={handleConfirmRide}
-                                        className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-sm transition-colors shadow-md"
-                                    >
-                                        ✓ Confirmar Carona
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </motion.div>
+  return (
+    <AnimatePresence>
+      {isOpen ? (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-950/62 backdrop-blur-sm sm:items-center sm:p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="flex h-[min(42rem,100dvh-0.5rem)] w-full max-w-xl flex-col overflow-hidden rounded-t-[28px] border border-white/10 bg-white shadow-[0_26px_70px_-28px_rgba(15,23,42,0.55)] sm:h-[40rem] sm:rounded-[28px]"
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-[linear-gradient(135deg,#0f1f4d_0%,#1d4ed8_100%)] px-5 py-4 text-white">
+              <div className="min-w-0">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-100/78">
+                  Conversa da rota
                 </div>
+                <div className="mt-1 text-lg font-semibold">{driverName}</div>
+                <div className="mt-1 text-sm text-blue-100/84">
+                  Combine pelo app e, se quiser, continue no WhatsApp.
+                </div>
+              </div>
+
+              <button
+                onClick={onClose}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/18"
+                aria-label="Fechar conversa"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="border-b border-slate-100 bg-slate-50 px-5 py-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="stat-chip px-3 py-1.5 text-xs">{priceLabel}</span>
+                <span className="stat-chip px-3 py-1.5 text-xs">{rideMoment}</span>
+              </div>
+              <div className="mt-3 flex items-start gap-2 text-sm text-slate-700">
+                <FaMapMarkerAlt className="mt-1 text-blue-600" />
+                <div>
+                  <div className="font-semibold">{rideOrigin}</div>
+                  <div className="mt-1 text-slate-500">→ {rideDestination}</div>
+                </div>
+              </div>
+            </div>
+
+            {isConfirmed ? (
+              <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                  <FaCheckCircle className="h-9 w-9" />
+                </div>
+                <div className="mt-5 text-2xl font-semibold text-slate-900">
+                  Carona confirmada
+                </div>
+                <p className="mt-3 max-w-sm text-sm leading-6 text-slate-500">
+                  A rota já está alinhada no UniGo. Se preferirem, vocês também podem
+                  continuar a conversa no WhatsApp para fechar os detalhes finais.
+                </p>
+                <button onClick={handleWhatsAppContinue} className="btn-primary mt-6">
+                  <FaWhatsapp />
+                  Continuar no WhatsApp
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="bg-amber-50 px-5 py-3 text-sm text-amber-700">
+                  <div className="flex items-start gap-2">
+                    <FaInfoCircle className="mt-1 shrink-0" />
+                    <span>
+                      Use esta conversa para alinhar horário, ponto de encontro e valor.
+                      O UniGo não cobra taxa de plataforma.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-4 py-4 sm:px-5">
+                  <div className="space-y-3">
+                    {messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[86%] rounded-[22px] px-4 py-3 shadow-sm ${
+                            message.sender === 'user'
+                              ? 'rounded-br-md bg-blue-600 text-white'
+                              : 'rounded-bl-md border border-slate-200 bg-white text-slate-800'
+                          }`}
+                        >
+                          <div className="text-sm leading-6">{message.text}</div>
+                          <div
+                            className={`mt-1 text-[0.68rem] ${
+                              message.sender === 'user' ? 'text-blue-100/86' : 'text-slate-400'
+                            }`}
+                          >
+                            {message.time}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-5">
+                  <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+                    {quickReplies.map((reply) => (
+                      <button
+                        key={reply}
+                        onClick={() => {
+                          setNewMessage(reply);
+                          inputRef.current?.focus();
+                        }}
+                        className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-900"
+                        type="button"
+                      >
+                        {reply}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={newMessage}
+                      onChange={(event) => setNewMessage(event.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Escreva uma mensagem"
+                      className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                    />
+                    <button
+                      onClick={handleSend}
+                      disabled={!newMessage.trim()}
+                      type="button"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    >
+                      <FaPaperPlane className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    <button onClick={handleConfirmRide} type="button" className="btn-primary w-full">
+                      <FaCheckCircle />
+                      Confirmar carona
+                    </button>
+                    <button
+                      onClick={handleWhatsAppContinue}
+                      type="button"
+                      className="btn-secondary w-full"
+                    >
+                      <FaWhatsapp />
+                      Levar para o WhatsApp
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
-        </AnimatePresence>
-    );
+          </motion.div>
+        </div>
+      ) : null}
+    </AnimatePresence>
+  );
 }

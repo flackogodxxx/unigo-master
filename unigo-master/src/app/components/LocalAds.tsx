@@ -1,114 +1,134 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaExternalLinkAlt, FaTag, FaBullhorn } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { FaBullhorn, FaExternalLinkAlt, FaTag } from 'react-icons/fa';
 
-const adsData = [
-    {
-        id: 1,
-        title: 'Xerox do Juca',
-        description: '10% de desconto na impressão da sua monografia!',
-        image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=600&auto=format&fit=crop',
-        tag: 'Serviços',
-        color: 'from-blue-500 to-indigo-600',
-        link: '#'
-    },
-    {
-        id: 2,
-        title: 'Lanchonete Universitária',
-        description: 'Compre 1 Salgado Maromba, ganhe 1 Suco.',
-        image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop',
-        tag: 'Alimentação',
-        color: 'from-orange-500 to-red-600',
-        link: '#'
-    },
-    {
-        id: 3,
-        title: 'Bar do Zé',
-        description: 'Happy Hour pós-aula: Chopp em dobro das 18h às 20h.',
-        image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=600&auto=format&fit=crop',
-        tag: 'Entretenimento',
-        color: 'from-amber-400 to-orange-500',
-        link: '#'
-    }
-];
+const highlights = [
+  {
+    id: 1,
+    title: 'Xerox do Juca',
+    description: 'Desconto rapido para quem precisa imprimir material antes da aula.',
+    image:
+      'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=900&auto=format&fit=crop',
+    tag: 'Servico local',
+    tone:
+      'from-[rgba(15,31,77,0.9)] via-[rgba(29,78,216,0.86)] to-[rgba(96,165,250,0.72)]',
+  },
+  {
+    id: 2,
+    title: 'Lanchonete Universitaria',
+    description: 'Ponto rapido para combinar antes da carona ou depois da aula.',
+    image:
+      'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=900&auto=format&fit=crop',
+    tag: 'Alimentacao',
+    tone:
+      'from-[rgba(15,31,77,0.9)] via-[rgba(245,158,11,0.86)] to-[rgba(251,191,36,0.72)]',
+  },
+  {
+    id: 3,
+    title: 'Ponto de encontro sugerido',
+    description: 'Ideia de local facil para alinhar embarques e encontros no centro.',
+    image:
+      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=900&auto=format&fit=crop',
+    tag: 'Rotina local',
+    tone:
+      'from-[rgba(15,31,77,0.9)] via-[rgba(16,185,129,0.82)] to-[rgba(52,211,153,0.7)]',
+  },
+] as const;
 
 export default function LocalAds() {
-    const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % adsData.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, []);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentIndex((current) => (current + 1) % highlights.length);
+    }, 5500);
 
-    return (
-        <div className="bg-white rounded-xl shadow-md p-4 md:p-6 mb-5 md:mb-8 overflow-hidden relative">
-            <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <FaBullhorn className="text-purple-600" />
-                </div>
-                <h2 className="text-lg md:text-xl font-bold text-slate-800">Parceiros UniGo</h2>
-            </div>
+    return () => window.clearInterval(timer);
+  }, []);
 
-            <div className="relative h-48 sm:h-56 rounded-xl overflow-hidden group cursor-pointer">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={currentIndex}
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5, ease: 'easeInOut' }}
-                        className="absolute inset-0 w-full h-full"
-                    >
-                        <div className={`absolute inset-0 bg-gradient-to-r ${adsData[currentIndex].color} opacity-90 z-10 mix-blend-multiply`} />
+  const currentItem = highlights[currentIndex];
 
-                        <Image
-                            src={adsData[currentIndex].image}
-                            alt={adsData[currentIndex].title}
-                            fill
-                            className="object-cover z-0"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-
-                        <div className="absolute inset-0 z-20 p-5 flex flex-col justify-end text-white">
-                            <div className="mb-2">
-                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold border border-white/30">
-                                    <FaTag size={10} /> {adsData[currentIndex].tag}
-                                </span>
-                            </div>
-                            <h3 className="text-xl md:text-2xl font-bold mb-1 shadow-sm leading-tight">
-                                {adsData[currentIndex].title}
-                            </h3>
-                            <p className="text-sm md:text-base text-white/90 line-clamp-2">
-                                {adsData[currentIndex].description}
-                            </p>
-                        </div>
-
-                        <div className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
-                            <FaExternalLinkAlt className="text-white text-xs" />
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
-
-                {/* Carousel Indicators */}
-                <div className="absolute bottom-3 right-4 z-30 flex gap-1.5">
-                    {adsData.map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setCurrentIndex(idx)}
-                            className={`w-2 h-2 rounded-full transition-all ${idx === currentIndex ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/80'
-                                }`}
-                            aria-label={`Go to slide ${idx + 1}`}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            <p className="text-[10px] text-slate-400 mt-3 text-right">Espaço Patrocinado</p>
+  return (
+    <section className="soft-panel overflow-hidden px-4 py-4 md:px-5 md:py-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-blue-700">
+            Destaques da comunidade
+          </div>
+          <h2 className="mt-1 text-base font-semibold text-slate-900 md:text-lg">
+            Pontos locais que combinam com a rotina UniGo
+          </h2>
         </div>
-    );
+
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+          <FaBullhorn className="text-sm" />
+        </div>
+      </div>
+
+      <div className="relative mt-4 overflow-hidden rounded-[26px]">
+        <AnimatePresence mode="wait">
+          <motion.article
+            key={currentItem.id}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.35 }}
+            className="relative min-h-[15rem] overflow-hidden rounded-[26px]"
+          >
+            <Image
+              src={currentItem.image}
+              alt={currentItem.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 40vw"
+            />
+
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${currentItem.tone}`}
+            />
+
+            <div className="relative flex min-h-[15rem] flex-col justify-end px-5 py-5 text-white">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/16 bg-white/12 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] backdrop-blur-md">
+                <FaTag className="text-[0.65rem]" />
+                {currentItem.tag}
+              </span>
+
+              <h3 className="mt-4 max-w-[17ch] text-xl font-semibold leading-7 md:text-2xl">
+                {currentItem.title}
+              </h3>
+              <p className="mt-2 max-w-[28ch] text-sm leading-6 text-white/86">
+                {currentItem.description}
+              </p>
+
+              <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-white/92">
+                <span>Referencia local</span>
+                <FaExternalLinkAlt className="text-[0.7rem]" />
+              </div>
+            </div>
+          </motion.article>
+        </AnimatePresence>
+
+        <div className="absolute bottom-4 right-4 flex gap-1.5">
+          {highlights.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setCurrentIndex(index)}
+              className={`h-2.5 rounded-full transition-all ${
+                index === currentIndex ? 'w-5 bg-white' : 'w-2.5 bg-white/45'
+              }`}
+              aria-label={`Abrir destaque ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="mt-3 text-right text-[0.68rem] text-slate-400">
+        Curadoria visual para demonstracao do ecossistema local.
+      </p>
+    </section>
+  );
 }

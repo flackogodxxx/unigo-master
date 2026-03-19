@@ -1,104 +1,116 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
 import {
-    FaHome,
-    FaSearch,
-    FaCar,
-    FaHistory,
-    FaUser
+  FaCompass,
+  FaHistory,
+  FaHome,
+  FaUser,
+  FaWallet,
 } from 'react-icons/fa';
 
 interface BottomNavigationProps {
-    activeTab?: string;
+  activeTab?: string;
 }
 
+const navItems = [
+  {
+    path: '/dashboard',
+    label: 'Inicio',
+    icon: FaHome,
+  },
+  {
+    path: '/passenger-dashboard',
+    label: 'Rotas',
+    icon: FaCompass,
+  },
+  {
+    path: '/wallet',
+    label: 'Impacto',
+    icon: FaWallet,
+  },
+  {
+    path: '/ride-history',
+    label: 'Historico',
+    icon: FaHistory,
+  },
+  {
+    path: '/profile',
+    label: 'Conta',
+    icon: FaUser,
+  },
+] as const;
+
 export default function BottomNavigation({ activeTab }: BottomNavigationProps) {
-    const router = useRouter();
-    const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
 
-    // Definir itens de navegação com componentes de ícones diretamente
-    const navItems = [
-        {
-            path: '/dashboard',
-            label: 'Início',
-            icon: () => <FaHome size={22} />
-        },
-        {
-            path: '/passenger-dashboard',
-            label: 'Buscar',
-            icon: () => <FaSearch size={22} />
-        },
-        {
-            path: '/driver-dashboard',
-            label: 'Oferecer',
-            icon: () => <FaCar size={22} />
-        },
-        {
-            path: '/ride-history',
-            label: 'Histórico',
-            icon: () => <FaHistory size={22} />
-        },
-        {
-            path: '/profile',
-            label: 'Perfil',
-            icon: () => <FaUser size={22} />
-        }
-    ];
+  const isActive = (path: string) => {
+    if (!activeTab) {
+      return pathname === path;
+    }
 
-    // Navegar para a página selecionada
-    const navigateTo = (path: string) => {
-        router.push(path);
-    };
-
-    // Verificar se o caminho atual corresponde ao item de navegação
-    const isActive = (path: string) => {
-        if (activeTab) {
-            // Se activeTab foi fornecido, compare com a parte do caminho após a última '/'
-            const tabName = path.split('/').pop() || '';
-            return tabName === activeTab || (activeTab === 'passenger' && tabName === 'passenger-dashboard') ||
-                (activeTab === 'driver' && tabName === 'driver-dashboard');
-        }
-        return pathname === path;
-    };
-
+    const currentKey = path.split('/').pop() || '';
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30">
-            <div className="flex justify-around py-2">
-                {navItems.map((item) => {
-                    const active = isActive(item.path);
-
-                    return (
-                        <button
-                            key={item.path}
-                            className="flex flex-col items-center justify-center w-1/5"
-                            onClick={() => navigateTo(item.path)}
-                        >
-                            <div className={active ? 'text-blue-600' : 'text-slate-500'}>
-                                {item.icon()}
-                            </div>
-
-                            <span className={`text-xs mt-1 ${active ? 'text-blue-600 font-medium' : 'text-slate-500'}`}>
-                                {item.label}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
-
-            {/* Indicador sutil de página atual */}
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-slate-100">
-                <motion.div
-                    className="h-full bg-blue-500"
-                    initial={{ width: '20%', x: '0%' }}
-                    animate={{
-                        width: '20%',
-                        x: `${navItems.findIndex(item => isActive(item.path)) * 100}%`
-                    }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                />
-            </div>
-        </div>
+      currentKey === activeTab ||
+      (activeTab === 'passenger' && currentKey === 'passenger-dashboard') ||
+      (activeTab === 'driver' && currentKey === 'dashboard')
     );
+  };
+
+  const activeIndex = Math.max(
+    0,
+    navItems.findIndex((item) => isActive(item.path))
+  );
+
+  return (
+    <div
+      className="fixed inset-x-0 bottom-0 z-40 px-3 md:hidden"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.7rem)' }}
+    >
+      <div className="mx-auto max-w-md rounded-[28px] border border-white/75 bg-white/88 px-2 py-2 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.42)] backdrop-blur-xl">
+        <div className="relative grid grid-cols-5 gap-1">
+          <motion.div
+            className="absolute bottom-0 top-0 rounded-[22px] bg-blue-50"
+            initial={false}
+            animate={{
+              width: `calc((100% - 1rem) / ${navItems.length})`,
+              x: `calc(${activeIndex * 100}% + ${activeIndex * 0.25}rem)`,
+            }}
+            transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+          />
+
+          {navItems.map((item) => {
+            const active = isActive(item.path);
+
+            return (
+              <button
+                key={item.path}
+                type="button"
+                onClick={() => router.push(item.path)}
+                className="relative z-10 flex min-h-[4.3rem] flex-col items-center justify-center gap-1 rounded-[22px] px-1"
+                aria-current={active ? 'page' : undefined}
+              >
+                <div
+                  className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+                    active ? 'bg-white text-blue-700' : 'text-slate-500'
+                  }`}
+                >
+                  <item.icon className="text-[1rem]" />
+                </div>
+                <span
+                  className={`text-[0.68rem] font-semibold tracking-[0.04em] ${
+                    active ? 'text-blue-800' : 'text-slate-500'
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }

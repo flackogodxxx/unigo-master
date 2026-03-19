@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { motion } from 'framer-motion';
@@ -22,25 +21,25 @@ import BrandLogo from '../components/BrandLogo';
 const highlights = [
   {
     icon: FaUniversity,
-    title: 'Entrada com contexto UniFio',
-    text: 'O cadastro reforça que o projeto foi desenhado para a realidade da faculdade.',
+    title: 'Comunidade UniFio',
+    text: 'A conta nasce dentro de um contexto real de campus, com uso mais confiavel desde o inicio.',
   },
   {
     icon: FaWallet,
     title: 'Sem taxa de plataforma',
-    text: 'A proposta institucional mantém o acesso gratuito para o aluno enquanto valida valor para a faculdade.',
+    text: 'O aluno entra, encontra sua rota e combina a carona sem mensalidade nem etapas desnecessarias.',
   },
   {
     icon: FaComments,
-    title: 'Da inscrição ao uso',
-    text: 'Depois do cadastro, o aluno já entra em um ambiente pronto para conversar, buscar e combinar caronas.',
+    title: 'Do cadastro ao uso',
+    text: 'Depois de criar a conta, a comunidade ja entra em um fluxo pronto para buscar e combinar caronas.',
   },
   {
     icon: FaShieldAlt,
-    title: 'Crescimento da comunidade',
-    text: 'Cada novo cadastro ajuda o UniGo a nascer mais forte dentro da realidade da UniFio.',
+    title: 'Entrada validada',
+    text: 'O uso do e-mail institucional ajuda a manter a experiencia mais clara e mais segura.',
   },
-];
+] as const;
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -74,11 +73,11 @@ export default function Register() {
 
     try {
       if (!formData.email.endsWith('@unifio.edu.br')) {
-        throw new Error('Por favor, use seu email universitário @unifio.edu.br');
+        throw new Error('Por favor, use seu email universitario @unifio.edu.br');
       }
 
       if (formData.password !== formData.confirmPassword) {
-        throw new Error('As senhas não coincidem');
+        throw new Error('As senhas nao coincidem');
       }
 
       if (formData.password.length < 6) {
@@ -86,7 +85,7 @@ export default function Register() {
       }
 
       if (!/^\d{8}$/.test(formData.ra)) {
-        throw new Error('RA inválido. Deve conter 8 dígitos');
+        throw new Error('RA invalido. Deve conter 8 digitos');
       }
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -94,7 +93,7 @@ export default function Register() {
       const userData = {
         name: formData.name,
         email: formData.email,
-        token: 'sim-jwt-token-' + Math.random().toString(36).substring(2),
+        token: `sim-jwt-token-${Math.random().toString(36).substring(2)}`,
         image: '',
       };
 
@@ -108,58 +107,49 @@ export default function Register() {
       setTimeout(() => {
         router.push('/dashboard');
       }, 1800);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao fazer cadastro. Tente novamente.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao fazer cadastro. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 pb-16 pt-28">
+    <main className="auth-shell">
       <div className="absolute inset-0 hero-pattern" />
       <div className="absolute inset-0 wave-pattern opacity-65" />
 
       <div className="container relative z-10 mx-auto max-w-6xl">
-        <div className="grid items-start gap-10 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.92fr_1.08fr]">
           <motion.section
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
             className="hidden lg:block"
           >
-            <span className="brand-badge">Cadastro UniFio</span>
+            <span className="brand-badge">Nova conta</span>
 
             <div className="mt-6">
-              <BrandLogo
-                size="lg"
-                caption="A porta de entrada da comunidade para o projeto"
-              />
+              <BrandLogo size="lg" caption="Mobilidade universitaria para quem vive a UniFio" />
             </div>
 
             <h1 className="font-display mt-8 max-w-2xl text-5xl leading-[0.96] text-slate-950">
-              Cadastre a comunidade UniFio em uma proposta que já nasce com cara
-              de solução institucional.
+              Crie sua conta e entre em uma experiencia pensada para o campus.
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              O cadastro não é só acesso ao produto. Ele coloca a comunidade
-              dentro do UniGo desde o começo e ajuda a moldar uma solução útil
-              para a rotina do campus.
+              O UniGo comeca no uso real da comunidade. A conta libera um fluxo simples
+              para encontrar caronas, conversar e organizar a rotina ate a UniFio.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {highlights.map((item) => (
-                <div key={item.title} className="metric-card">
+                <div key={item.title} className="auth-highlight">
                   <div className="feature-icon">
                     <item.icon className="text-lg" />
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold text-slate-900">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    {item.text}
-                  </p>
+                  <h3 className="mt-5 text-lg font-semibold text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -169,26 +159,15 @@ export default function Register() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08 }}
-            className="brand-panel w-full p-6 sm:p-8 lg:ml-auto"
+            className="auth-card w-full lg:ml-auto"
           >
-            <div className="flex items-center justify-between gap-4">
-              <BrandLogo size="sm" caption="Comunidade UniFio" />
-              <button
-                onClick={() => router.push('/')}
-                className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
-              >
-                Voltar ao site
-              </button>
-            </div>
-
             <div className="mt-6">
-              <span className="brand-badge">Cadastro institucional</span>
-              <h2 className="font-display mt-4 text-4xl text-slate-950">
+              <span className="brand-badge">Criar conta</span>
+              <h2 className="font-display mt-4 text-[2.25rem] leading-[0.98] text-slate-950 sm:text-4xl">
                 Crie sua conta
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Entre no UniGo x UniFio com seus dados acadêmicos e participe da
-                validação do projeto dentro da faculdade.
+                Entre no UniGo com seus dados da UniFio e comece a usar o app com a comunidade.
               </p>
             </div>
 
@@ -213,19 +192,13 @@ export default function Register() {
                   <h3 className="mt-4 text-xl font-semibold text-slate-900">
                     Cadastro realizado com sucesso
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Seu acesso está sendo redirecionado para o dashboard da
-                    operação UniFio.
-                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Abrindo seu painel agora.</p>
                 </motion.div>
               ) : (
                 <>
                   <div className="grid gap-5 md:grid-cols-2">
                     <div>
-                      <label
-                        htmlFor="name"
-                        className="mb-2 block text-sm font-semibold text-slate-700"
-                      >
+                      <label htmlFor="name" className="mb-2 block text-sm font-semibold text-slate-700">
                         Nome completo
                       </label>
                       <div className="relative">
@@ -236,7 +209,7 @@ export default function Register() {
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                          className="auth-input"
                           placeholder="Seu nome completo"
                           required
                         />
@@ -248,7 +221,7 @@ export default function Register() {
                         htmlFor="email"
                         className="mb-2 block text-sm font-semibold text-slate-700"
                       >
-                        Email universitário
+                        Email da UniFio
                       </label>
                       <div className="relative">
                         <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -258,7 +231,7 @@ export default function Register() {
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                          className="auth-input"
                           placeholder="seu.email@unifio.edu.br"
                           required
                         />
@@ -266,10 +239,7 @@ export default function Register() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="ra"
-                        className="mb-2 block text-sm font-semibold text-slate-700"
-                      >
+                      <label htmlFor="ra" className="mb-2 block text-sm font-semibold text-slate-700">
                         RA
                       </label>
                       <div className="relative">
@@ -280,7 +250,7 @@ export default function Register() {
                           name="ra"
                           value={formData.ra}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                          className="auth-input"
                           placeholder="12345678"
                           maxLength={8}
                           required
@@ -303,7 +273,7 @@ export default function Register() {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                          className="auth-input"
                           placeholder="(18) 99999-9999"
                           required
                         />
@@ -325,8 +295,8 @@ export default function Register() {
                           name="password"
                           value={formData.password}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
-                          placeholder="••••••••"
+                          className="auth-input"
+                          placeholder="Crie uma senha"
                           required
                         />
                       </div>
@@ -347,8 +317,8 @@ export default function Register() {
                           name="confirmPassword"
                           value={formData.confirmPassword}
                           onChange={handleChange}
-                          className="w-full rounded-2xl border border-slate-200/80 bg-white/80 py-3 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
-                          placeholder="••••••••"
+                          className="auth-input"
+                          placeholder="Repita a senha"
                           required
                         />
                       </div>
@@ -370,8 +340,8 @@ export default function Register() {
                       />
                     ) : (
                       <>
-                      Criar conta
-                      <FaArrowRight />
+                        Criar conta
+                        <FaArrowRight />
                       </>
                     )}
                   </motion.button>
@@ -381,12 +351,12 @@ export default function Register() {
 
             {!registerSuccess ? (
               <div className="mt-6 text-center text-sm text-slate-600">
-                Já tem uma conta?{' '}
+                Ja tem uma conta?{' '}
                 <button
                   onClick={() => router.push('/login')}
                   className="font-semibold text-blue-800 transition-colors hover:text-blue-600"
                 >
-                  Fazer login
+                  Entrar
                 </button>
               </div>
             ) : null}
