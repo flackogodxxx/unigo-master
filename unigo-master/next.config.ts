@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: process.env.NODE_ENV === 'development'
   },
+  // @ts-ignore: type override for property that may not be in NextConfig type
   eslint: {
     ignoreDuringBuilds: true,
   }
