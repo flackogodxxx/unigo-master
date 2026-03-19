@@ -107,7 +107,7 @@
   }
 
   .brand-badge {
-    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em];
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] pl-[calc(1.25rem+0.22em)];
     border: 1px solid rgba(37, 99, 235, 0.15);
     background: rgba(255, 255, 255, 0.78);
     color: var(--brand-blue);

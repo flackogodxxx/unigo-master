@@ -174,7 +174,9 @@ export default function Home() {
               transition={{ duration: 0.75 }}
               className="mx-auto max-w-4xl"
             >
-              <span className="brand-badge">Feito para a rotina da comunidade UniFio</span>
+              <div className="flex justify-center md:justify-start">
+                <span className="brand-badge">Feito para a rotina da comunidade UniFio</span>
+              </div>
 
               <div className="mt-6">
                 <BrandLogo size="lg" caption="Mobilidade universitaria para a UniFio" />
