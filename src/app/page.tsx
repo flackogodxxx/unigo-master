@@ -172,30 +172,30 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75 }}
-              className="mx-auto max-w-4xl"
+              className="mx-auto flex max-w-4xl flex-col items-center text-center md:items-start md:text-left"
             >
               <div className="flex justify-center md:justify-start">
                 <span className="brand-badge">Feito para a rotina da comunidade UniFio</span>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 flex justify-center md:justify-start">
                 <BrandLogo size="lg" caption="Mobilidade universitaria para a UniFio" />
               </div>
 
-              <h1 className="font-display mt-8 max-w-[17ch] text-[2.85rem] leading-[0.95] text-slate-950 sm:text-[3.75rem]">
+              <h1 className="font-display mx-auto mt-8 max-w-[17ch] text-[2.85rem] leading-[0.95] text-slate-950 sm:text-[3.75rem] md:mx-0">
                 Caronas universitarias para a UniFio, com mais economia e menos estresse.
               </h1>
 
-              <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+              <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8 md:mx-0">
                 O UniGo conecta alunos que fazem trajetos parecidos em Ourinhos para
                 dividir custos, organizar a ida ao campus e tornar a rotina mais simples.
               </p>
 
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-500 sm:text-base">
+              <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-slate-500 sm:text-base md:mx-0">
                 Nascido e arquitetado do zero na UniFio, a plataforma processa a geografia da cidade. Uma tecnologia invisível focada exclusivamente em salvar horas produtivas que eram desperdiçadas na região.
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row md:justify-start">
                 <motion.button
                   className="btn-primary"
                   whileHover={{ scale: 1.02 }}
